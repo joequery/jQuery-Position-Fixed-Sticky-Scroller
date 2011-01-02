@@ -1,0 +1,6 @@
+#Ignore komodo project files
+.komodotools
+stickyscroller.komodoproject
+diagram.psd
+easing.js
+nonweb/
