@@ -225,7 +225,7 @@ function StickyScroller(obj, options)
            
            $("#scrollcontainer"+ StickyScroller.counter).css({
             position : 'absolute',
-            top: settings.start+settings.margin,
+            top: top,
             left: left,
             right: right});
         }
