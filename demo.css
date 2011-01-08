@@ -3,7 +3,7 @@ margin-top: 0px;
 margin-left: 30px;
 }
     #scrollbox{
-    position: fixed;
+    position: absolute;
     top: 400px;
     left: 50px;
     width: 100px;

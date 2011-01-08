@@ -206,6 +206,7 @@ function StickyScroller(obj, options)
     });
 
     obj.wrap(wrap);
+    $(obj).css('position', 'fixed');
         
     $(window).scroll(function()
     {
@@ -220,8 +221,7 @@ function StickyScroller(obj, options)
            $(obj).css({
             position : 'absolute',
             top: 0,
-            left: 0,
-            right: 0});
+            left: 0});
            
            $("#scrollcontainer"+ StickyScroller.counter).css({
             position : 'absolute',
@@ -236,8 +236,7 @@ function StickyScroller(obj, options)
            $(obj).css({
             position : 'absolute',
             top: 0,
-            left: 0,
-            right: 0});
+            left: 0});
            
            $("#scrollcontainer"+ StickyScroller.counter).css({
             position : 'absolute',

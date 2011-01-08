@@ -5,7 +5,7 @@
     <link rel="stylesheet" type="text/css" href="demo.css" />
     <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.js"></script>
     <script type="text/javascript" src="http://www.vertstudios.com/vertlib.min.js"></script>
-    <script type="text/javascript" src="StickyScroller.min.js"></script>
+    <script type="text/javascript" src="StickyScroller.js"></script>
     <script type="text/javascript" src="GetSet.js"></script>
     
         
