@@ -4,46 +4,16 @@ margin-left: 30px;
 }
     #scrollbox{
     position: fixed;
-    top: 100px;
-    left: 50px;
-    width: 100px;
+    bottom: 15px;
+    right: 15px;
+    width: 150px;
     background-color: #FF0000;
-    height: 100px;
+    height: 150px;
     }
     
-    #code{
-    position: fixed;
-    top: 85px;
-    left: 400px;
-    width: 400px;
-    height: 200px;
-    }    
-    
-    #blocks{
-    margin-top: 100px;
-    }
-    
-    .block{
-    margin: 0px 0px 100px 130px;
-    height: 200px;
-    width: 200px;
-    background-color: #000000;
-    }
-    
-    #blankspace{
-    height: 1000px;
-    }
-    
-    .blue{
-    background-color: #000099;
-    }
-    
-    #info{
-    position: absolute;
-    top: 0px;
-    left: 250px;
-    }
-    
-    .blue{
-    background-color: #000099;
-    }
+	#footer{
+	margin-top: 1500px;
+	background-color: #000000;
+	height: 400px;
+	width: 100%;
+	}
