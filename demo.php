@@ -11,39 +11,23 @@
         
     <script type="text/javascript">
     $(window).load(function()
-    {
-        var scroller = new StickyScroller("#scrollbox",
-        {
-            start: 300,
-            end: 1800,
-            interval: 300,
-            range: 100,
-            margin: 100
-        });
-                
-        var opacity = .25;
-        var fadeTime = 500;
-        var current;
-                
-        //Apply opacity to all but first item.
-        $(".block").slice(1).css('opacity', opacity);
-        
-        
-        scroller.onNewIndex(function(index)
-        {
-            $("#scrollbox").html("Index " + index);
-        });
-        
-        scroller.onScroll(function(index)
-        {                        
-            if(scroller.inRange())
-            {
-                current = $(".block").eq(index).css("opacity", 1);
-                $(".block").not(current).css("opacity", opacity);
-            }
-        });
-        
+	{
+		var res = $(window).height();
+		var newRes = 0;
+		var block = $("#scrollbox");
+		var blockHeight = $(block).height();
+		var padding = 50;
+		$(block).css('top', res-blockHeight-padding);
 
+		var scroller = new StickyScroller("#scrollbox",{
+			margin: res-blockHeight-padding,
+			start: 0,
+			end: "parent"
+		});
+
+		$(window).resize(function(){
+			scroller.recalculate();
+		});
     });
 
     </script>
@@ -51,17 +35,10 @@
 </head>
 <body>
     <div id="main">
-        <div id="scrollbox">Index 0</div>
-        <div id="blocks">
-        <div class="block"></div>
-        <div class="block"></div>
-        <div class="block"></div>
-        <div class="block"></div>
-        <div class="block"></div>
-        <div class="block"></div>
-        <div class="block"></div>
-        <div id="blankspace"></div>
+        <div id="block">
+			<div id="scrollbox">This scrolling object stays in the parent</div>
         </div>
+		<div id="block2"></div>
     </div>
     
 </body>

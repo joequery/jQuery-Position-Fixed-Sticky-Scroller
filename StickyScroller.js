@@ -10,7 +10,7 @@
 //  margin: Margin from the top of the browser
 // Dependencies:
 //  GetSet class. Included in Vert Library @ http://vertstudios.com/vertlib.js
-/******************************************************************************/
+//****************************************************************************/
 
 function StickyScroller(obj, options)
 {        
@@ -27,31 +27,67 @@ function StickyScroller(obj, options)
     //Store function scope
     var $this = this;
     
-    //Store initial top and left/right values
-    var top = $(obj).css('top');
-    var left = $(obj).css('left');
-    var right = $(obj).css('right');
-    
+    //Store initial top and left
+	var offset = $(obj).offset();
+    var top = offset.top;
+    var left = offset.left;
+	var cssLeft = $(obj).css('left');
+	var cssTop = $(obj).css('top'); 
+	var parentHeight = $(obj).parent().height();
+
     var scroll = 0;
-    var tempScroll = 0;
     
     //------------------------------------------------------------
     // Set default property values
     //------------------------------------------------------------
     var defaults = {
-    start: 0,
-    end: 10000,
-    interval: $(obj).height(),
-    margin: parseInt(top, 10),
+    start: "parent",
+    end: "parent",
+    interval: null,
+    margin: 100,
     range: $(obj).height()
     },	settings = jQuery.extend(defaults,options);
     obj = $(obj);
     
-    settings.index = 0;
+    if(settings.start === "parent"){
+		settings.start = $(obj).parent().offset().top - settings.margin;
+	}
+	
+    if(settings.end === "parent"){
+		settings.end = $(obj).parent().offset().top 
+			+ parentHeight
+			- $(obj).height()
+			- settings.margin;
+	}
+
+	
+	this.recalculate = function(){
+		offset = $(obj).offset();
+		top = offset.top;
+		left = offset.left;
+
+	   $(obj).css({
+		position : 'absolute',
+		top: 0,
+		left: 0
+	   });
+	   
+	   $("#scrollcontainer"+ StickyScroller.counter).css({
+		position : 'absolute',
+		top: $(window).scrollTop()+settings.margin,
+		left: cssLeft
+		});
+		
+	    settings.end += (settings.end - settings.margin)
+		console.log("End: " + settings.end)
+	};	
+	
+	settings.index = 0;
     settings.oldIndex = 0;
 
     //Accessors for settings
     GetSet.getters({scope: $this, obj: settings});
+    GetSet.setters({scope: $this, obj: settings});
     
     //------------------------------------------------------------//
     //                      Callback Functions                    //
@@ -131,8 +167,8 @@ function StickyScroller(obj, options)
         if(scroll > settings.start && scroll < settings.end)
         {                                       
             //Possible new index
-            tempIndex = Math.floor((scroll-settings.start)/settings.interval);            
-            
+            tempIndex = Math.floor((scroll-settings.start)/settings.interval);
+           
             //Make sure the index is different before reassigning
             //or executing the callback
             if(tempIndex !== settings.index)
@@ -148,7 +184,8 @@ function StickyScroller(obj, options)
         else if(scroll >= settings.end)
         {
             settings.oldIndex = settings.index;
-            settings.index = Math.floor((settings.end-settings.start)/settings.interval);
+            settings.index = 
+				Math.floor((settings.end-settings.start)/settings.interval);
         }
         //If scroll goes beyond beginning mark, set distance at start
         else
@@ -175,7 +212,8 @@ function StickyScroller(obj, options)
     //=========================================================//
     this.lastIndex = function()
     {
-        return Math.floor((settings.end-settings.start+settings.margin)/settings.interval);
+        return Math.floor((settings.end-settings.start+settings.margin)
+				           /settings.interval);
     };
     
     //=========================================================//
@@ -186,8 +224,9 @@ function StickyScroller(obj, options)
     this.inRange = function()
     {              
         var upperbound = settings.index * settings.interval + settings.start;
-        var lowerbound = settings.index * settings.interval + settings.start + settings.range;
-        var inRange = (scroll >= upperbound ) && (scroll <= lowerbound);        
+        var lowerbound = settings.index * settings.interval 
+			             + settings.start + settings.range;
+        var inRange = (scroll >= upperbound ) && (scroll <= lowerbound); 
         return inRange;
     };
     
@@ -195,25 +234,29 @@ function StickyScroller(obj, options)
     //------------------------------------------------------------//
     //                    On Browser Scroll                       //
     //------------------------------------------------------------//    
-    var wrap = $('<div id="scrollcontainer' + StickyScroller.counter + '">').css(
-    {
-        width: obj.width(),
-        height: obj.height(),
-        position: "absolute",
-        top: top,
-        left: left,
-        right: right
-    });
+    var wrap = $('<div id="scrollcontainer' + StickyScroller.counter + '">')
+		.css({
+				width: obj.width(),
+				height: obj.height(),
+				position: "absolute",
+				top: cssTop,
+				left: cssLeft
+			});
 
     obj.wrap(wrap);
-    $(obj).css('position', 'fixed');
-        
+    $(obj).css({
+		top: 0,
+		left: 0
+	});
+	
     $(window).scroll(function()
     {
         scroll = $(window).scrollTop();
         
         //Get the current index
-        getIndex();
+        if(settings.interval){
+			getIndex();
+		}
                             
         //If scroll less than beginning, set back to beginning
         if(scroll < settings.start)
@@ -225,9 +268,9 @@ function StickyScroller(obj, options)
            
            $("#scrollcontainer"+ StickyScroller.counter).css({
             position : 'absolute',
-            top: top,
-            left: left,
-            right: right});
+            top: cssTop,
+            left: cssLeft
+            });
         }
         
         //If scroll greater than ending position, set to end
@@ -236,13 +279,14 @@ function StickyScroller(obj, options)
            $(obj).css({
             position : 'absolute',
             top: 0,
-            left: 0});
+            left: 0
+		   });
            
            $("#scrollcontainer"+ StickyScroller.counter).css({
             position : 'absolute',
-            top: settings.end+settings.margin,
-            left: left,
-            right: right});
+            top: parentHeight - $(obj).height(),
+            left: cssLeft
+            });
            
         }
         
@@ -253,24 +297,27 @@ function StickyScroller(obj, options)
             $(obj).css({
             position : 'fixed',
             top: settings.margin,
-            left: left,
-            right: right});
+            left: left
+            });
         }        
                                     
         //If in the specified range and a new index, do the callback        
-        if(settings.oldIndex !== settings.index)
+        if(settings.oldIndex !== settings.index && settings.interval)
         {
            Callback.newIndex(settings.index);
         }
         
         //Do the "limbo" call back, which is a callback that executes when
         //the scroller is not in the range, but still between start and end
-        if( !$this.inRange() && scroll > settings.start && scroll < settings.end )
+        if(!$this.inRange() 
+				&& scroll > settings.start 
+				&& scroll <settings.end
+				&& settings.interval)
         {
            Callback.limbo(settings.index);
         }
         
-        //Do the scroll callback regardless of what happens
+		//Do the scroll callback regardless of what happens
         Callback.scroll(settings.index);
     });
 }
